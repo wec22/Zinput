@@ -1,5 +1,5 @@
-Zinput
-======
+#Zinput
+
 
 Zinput is a simple input library for love2d based on [tactile](https://github.com/tesselode/tactile).
 
@@ -9,31 +9,33 @@ The name is a parody of xinput
 
 
 Usage
------
-###installing
+----
+###Installing
+-------
 - Make sure you include [middleclass](https://github.com/kikito/middleclass)
 - Require the file: `local zinput = require("zinput")`
 - Include the mixin into the class: `class:include(zinput)`
 
-###inputs
-####buttons
+###Inputs
+-------
+######Buttons
 - Create a button: `object:newbutton(name[,detector])`
 - Add a detector: `object.inputs.name:addDetector(detector)`
 
-####axes
+######Axes
 - Create an axis: `object:newaxis(name[,detector])`
 - Add a detector: `object.inputs.name:addDetector(detector)`
 
-###detectors
+###Detectors
 - Detectors are functions that return the value of the input
 - Button detectors return true if pressed or false if up
 - Axis detectors return a value between -1 and 1
 
-###reading values
+###Reading values
 - Buttons and axes are read the same way `object.inputs.name([what])`
 - What is either a button or axis enum. default value = "value"
 
-###button enums
+###Button enums
 - "value":    true if button is currently down (default)
 - "prev":     true if button was down last frame
 - "down":     same as "value"
@@ -41,7 +43,7 @@ Usage
 - "pressed":  true if button was first pressed this frame
 - "released": true if the button was released this frame
 
-###axis enums
+###Axis enums
 - "value":    returns the value of the axis this frame
 - "prev":     returns the value of the axis last frame
 - "vel":      returns the velocity of the axis
