@@ -21,22 +21,6 @@ local button={
     end,
 }
 button.__index=button
-
-local axis={
-    __call=function(self,what)
-        what=what or "value"
-        if what=="value" then
-            return self.value
-        elseif what=="prev" then
-            return self.prev
-        elseif what=="vel" then
-            return self.vel
-        end
-    end
-}
-axis.__index=axis
-
---
 function zinput:newbutton(name,...)
     self.inputs[name]={
         detectors={...},
@@ -45,42 +29,6 @@ function zinput:newbutton(name,...)
     }
     setmetatable(self.inputs[name],button)
 end
-function zinput:newaxis(name,...)
-    self.inputs[name]={
-        prev=0,
-        value=0,
-        vel=0,
-        dz=0.5,
-        detectors={...}
-    }
-    setmetatable(self.inputs[name],axis)
-end
-
---
-function zinput:inputUpdate()
-    for k,v in next, self.inputs do
-        self.inputs[k]:update()
-    end
-end
-function zinput:newbutton(name,...)
-    self.inputs[name]={
-        detectors={...},
-        prev=false,
-        value=false
-    }
-    setmetatable(self.inputs[name],button)
-end
-function zinput:newaxis(name,...)
-    self.inputs[name]={
-        prev=0,
-        value=0,
-        vel=0,
-        dz=0.5,
-        detectors={...}
-    }
-    setmetatable(self.inputs[name],axis)
-end
-
 
 --button definitions
 function button:addDetector(detector)
@@ -99,7 +47,30 @@ function button:update()
     end
 end
 
+local axis={
+    __call=function(self,what)
+        what=what or "value"
+        if what=="value" then
+            return self.value
+        elseif what=="prev" then
+            return self.prev
+        elseif what=="vel" then
+            return self.vel
+        end
+    end
+}
+axis.__index=axis
 
+function zinput:newaxis(name,...)
+    self.inputs[name]={
+        prev=0,
+        value=0,
+        vel=0,
+        dz=0.5,
+        detectors={...}
+    }
+    setmetatable(self.inputs[name],axis)
+end
 --axis definitions
 function axis:addDetector(detector)
     table.insert(self.detectors,detector)
@@ -121,6 +92,13 @@ function axis:setdeadzone(dz)
 end
 
 
+
+
+function zinput:inputUpdate()
+    for k,v in next, self.inputs do
+        self.inputs[k]:update()
+    end
+end
 --detectors
 function gampadbutton(button,pad)
     return function()
