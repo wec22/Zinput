@@ -1,7 +1,7 @@
 local detectors={}
 
 detectors.button={}
-function detectors.button.key()
+function detectors.button.key(key)
     return function()
         return love.keyboard.isDown(key)
     end

@@ -8,6 +8,7 @@ local zinput={
 local button={
     __call=function(self,what)
         what=what or "value"
+        assert(type(what)=="string","'what' must be a string")
         if what=="value" or "down" then         --always true if down
             return self.value
         elseif what=="prev" then                --true if button was pressed last frame
@@ -22,6 +23,7 @@ local button={
 }
 button.__index=button
 function zinput:newbutton(name,...)
+    assert(type(name)=="string","name must be a string")
     self.inputs[name]={
         detectors={...},
         prev=false,
@@ -32,6 +34,7 @@ end
 
 --button definitions
 function button:addDetector(detector)
+    assert(type(detector)=="function", "detector must be a function")
     table.insert(self.detectors,detector)
 end
 function button:update()
@@ -50,6 +53,8 @@ end
 local axis={
     __call=function(self,what)
         what=what or "value"
+        assert(type(what)=="string","'what' must be a string")
+
         if what=="value" then
             return self.value
         elseif what=="prev" then
@@ -73,6 +78,7 @@ function zinput:newaxis(name,...)
 end
 --axis definitions
 function axis:addDetector(detector)
+    assert(type(detector)=="function", "detector must be a function")
     table.insert(self.detectors,detector)
 end
 function axis:update()
@@ -92,13 +98,12 @@ function axis:setdeadzone(dz)
 end
 
 
-
-
 function zinput:inputUpdate()
     for k,v in next, self.inputs do
         self.inputs[k]:update()
     end
 end
+
 --detectors
 function gampadbutton(button,pad)
     return function()
@@ -111,7 +116,5 @@ function keyboard(key)
         return love.keyboard.isDown(key)
     end
 end
-
-
 
 return zinput

@@ -1,6 +1,7 @@
 local class  = require("middleclass")
 local zinput = require("zinput")
 local detectors = require("detectors")
+local lovebird=require("lovebird")
 player=class("player")                  --example class, can be whatever you want
 player:include(zinput)                  --include the library into the player class
 
@@ -10,16 +11,24 @@ function player:initialize()            --setup the class members
 end
 
 function love.load()
+    lovebird.update()
     p=player:new()                      --create a new player object
-    p:newbutton("up",detectors.button.key("w"))     --create buttons
-    p:newbutton("down",detectors.button.key("s"))
-    p:newbutton("left",detectors.button.key("a"))
-    p:newbutton("right",detectors.button.key("d"))
+
+    p:newbutton("up")     --create buttons
+    p:newbutton("down")
+    p:newbutton("left")
+    p:newbutton("right")
 
     p.inputs.up:addDetector(detectors.button.key("up"))
     p.inputs.down:addDetector(detectors.button.key("down"))
     p.inputs.left:addDetector(detectors.button.key("left"))
     p.inputs.right:addDetector(detectors.button.key("right"))
+
+    p.inputs.up:addDetector(detectors.button.key("w"))
+    p.inputs.down:addDetector(detectors.button.key("s"))
+    p.inputs.left:addDetector(detectors.button.key("a"))
+    p.inputs.right:addDetector(detectors.button.key("d"))
+
 end
 
 function love.update(dt)
