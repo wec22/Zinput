@@ -1,7 +1,7 @@
 local class  = require("middleclass")
 local zinput = require("zinput")
 local detectors = require("detectors")
-local lovebird=require("lovebird")
+
 player=class("player")                  --example class, can be whatever you want
 player:include(zinput)                  --include the library into the player class
 
@@ -14,7 +14,7 @@ function love.load()
     lovebird.update()
     p=player:new()                      --create a new player object
 
-    p:newbutton("up")     --create buttons
+    p:newbutton("up")                   --create buttons
     p:newbutton("down")
     p:newbutton("left")
     p:newbutton("right")
