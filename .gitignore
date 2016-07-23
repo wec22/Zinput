@@ -39,6 +39,8 @@ luac.out
 *.x86_64
 *.hex
 
+#shared libraries
+middleclass.lua
 
 # =========================
 # Operating System Files

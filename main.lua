@@ -1,5 +1,6 @@
 local class  = require("middleclass")
 local zinput = require("zinput")
+local detectors = require("detectors")
 
 player=class("player")                  --example class, can be whatever you want
 player:include(zinput)                  --include the library into the player class
@@ -10,16 +11,24 @@ function player:initialize()            --setup the class members
 end
 
 function love.load()
+    lovebird.update()
     p=player:new()                      --create a new player object
-    p:newbutton("up",keyboard("w"))     --create buttons
-    p:newbutton("down",keyboard("s"))
-    p:newbutton("left",keyboard("a"))
-    p:newbutton("right",keyboard("d"))
 
-    p.inputs.up:addDetector(keyboard("up"))
-    p.inputs.down:addDetector(keyboard("down"))
-    p.inputs.left:addDetector(keyboard("left"))
-    p.inputs.right:addDetector(keyboard("right"))
+    p:newbutton("up")                   --create buttons
+    p:newbutton("down")
+    p:newbutton("left")
+    p:newbutton("right")
+
+    p.inputs.up:addDetector(detectors.button.key("up"))
+    p.inputs.down:addDetector(detectors.button.key("down"))
+    p.inputs.left:addDetector(detectors.button.key("left"))
+    p.inputs.right:addDetector(detectors.button.key("right"))
+
+    p.inputs.up:addDetector(detectors.button.key("w"))
+    p.inputs.down:addDetector(detectors.button.key("s"))
+    p.inputs.left:addDetector(detectors.button.key("a"))
+    p.inputs.right:addDetector(detectors.button.key("d"))
+
 end
 
 function love.update(dt)
