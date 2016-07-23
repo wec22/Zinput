@@ -1,4 +1,4 @@
-local class  = require("middleclass")
+local class  = require("middleclass.middleclass")
 local zinput = require("zinput")
 local detectors = require("detectors")
 
@@ -11,7 +11,6 @@ function player:initialize()            --setup the class members
 end
 
 function love.load()
-    lovebird.update()
     p=player:new()                      --create a new player object
 
     p:newbutton("up")                   --create buttons
@@ -29,6 +28,19 @@ function love.load()
     p.inputs.left:addDetector(detectors.button.key("a"))
     p.inputs.right:addDetector(detectors.button.key("d"))
 
+
+
+    p:newaxis("lx")
+    p:newaxis("ly")
+
+    p.inputs.lx:addDetector(detectors.axis.gamepad("leftx",1))
+    p.inputs.ly:addDetector(detectors.axis.gamepad("lefty",1))
+
+
+
+    p:newjoy("r")
+    p.inputs.r:addDetector(detectors.joy.gamepad("right",1))
+
 end
 
 function love.update(dt)
@@ -45,6 +57,12 @@ function love.update(dt)
     elseif p.inputs.right("down") then
         p.x=p.x+(100*dt)
     end
+
+    p.x=p.x+p.inputs.lx()*100*dt
+    p.y=p.y+p.inputs.ly()*100*dt
+
+    p.x=p.x+p.inputs.rx()*100*dt
+    p.y=p.y+p.inputs.ry()*100*dt
 end
 
 function love.draw()
