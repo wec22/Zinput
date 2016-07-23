@@ -8,8 +8,7 @@ local zinput={
 local button={
     __call=function(self,what)
         what=what or "value"
-        assert(type(what)=="string","'what' must be a string")
-        if what=="value" or "down" then         --always true if down
+        if what=="value" or what=="down" then         --always true if down
             return self.value
         elseif what=="prev" then                --true if button was pressed last frame
             return self.prev
@@ -84,9 +83,9 @@ end
 function axis:update()
     self.prev=self.value
     self.value=0
-    for i=1, #self.detectors do
-        local value = self.detectors[i]()
-        if math.abs(value)>dz then
+    for i in pairs(self.detectors) do
+        local value = self.detectors[i]() or 0
+        if math.abs(value)>self.dz then
             self.value=value
         end
     end
@@ -97,23 +96,35 @@ function axis:setdeadzone(dz)
     self.dz=dz
 end
 
+--experimental joystick wrapper for axes
+local joy={
+
+
+}
+joy.__index=joy
+
+function zinput:newjoy(name,x,y,...)
+    self:newaxis(name..'x',x)
+    self:newaxis(name..'y',y)
+
+    self.inputs[name]={
+        x=self.inputs[name..'x'],
+        y=self.inputs[name..'y']
+    }
+    setmetatable(self.inputs[name],joy)
+end
+function joy:update()
+    --doesn't need to do anything since the axes are updated already
+    --it just needs to exist
+end
+function joy:addDetector(x,y)
+    self.x:addDetector(x)
+    self.y:addDetector(y)
+end
 
 function zinput:inputUpdate()
     for k,v in next, self.inputs do
         self.inputs[k]:update()
-    end
-end
-
---detectors
-function gampadbutton(button,pad)
-    return function()
-        local joystick = love.joystick.getJoysticks()[pad]
-        return joystick and joystick:isGamepadDown(button)
-    end
-end
-function keyboard(key)
-    return function()
-        return love.keyboard.isDown(key)
     end
 end
 

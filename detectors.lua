@@ -25,4 +25,10 @@ function detectors.axis.gamepad(axis,padnum)--requires version >=0.9.0
         return joystick and joystick:getGamepadAxis(axis)
     end
 end
+
+detectors.joy={}
+function detectors.joy.gamepad(axis,padnum)
+    return detectors.axis.gamepad(axis.."x",padnum), detectors.axis.gamepad(axis.."y",padnum)
+end
+
 return detectors
