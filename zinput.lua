@@ -6,19 +6,23 @@ local zinput={
 }
 
 local button={
-    __call=function(self,what)
+    __call=function(self, what)
         what=what or "value"
+        local time=self.time
         if what=="value" or what=="down" then         --always true if down
-            return self.value
+            return self.value, time
         elseif what=="prev" then                --true if button was pressed last frame
             return self.prev
         elseif what=="pressed" then             --true if first pressed this frame
-            return self.value and not self.prev
+            self.time=0
+            return self.value and not self.prev, time
         elseif what=="released" then            --true if released this frame
-            return not self.value and self.prev
+            self.time=0
+            return not self.value and self.prev, time
         elseif what=="up" then                  --always true if the button is not pressed opposite of "value" or "down"
+            return not self.value, time
         end
-    end,
+    end
 }
 button.__index=button
 function zinput:newbutton(name,...)
@@ -26,7 +30,8 @@ function zinput:newbutton(name,...)
     self.inputs[name]={
         detectors={...},
         prev=false,
-        value=false
+        value=false,
+        time=0
     }
     setmetatable(self.inputs[name],button)
 end
@@ -36,10 +41,10 @@ function button:addDetector(detector)
     assert(type(detector)=="function", "detector must be a function")
     table.insert(self.detectors,detector)
 end
-function button:update()
+function button:update(dt)
     self.prev=self.value
     self.value=false
-
+    self.time=self.time + (dt or 0)
     --loop to go through detectors and check if true
     for i in ipairs(self.detectors) do
         if self.detectors[i]() then
@@ -122,9 +127,9 @@ function joy:addDetector(x,y)
     self.y:addDetector(y)
 end
 
-function zinput:inputUpdate()
+function zinput:inputUpdate(dt)
     for k,v in next, self.inputs do
-        self.inputs[k]:update()
+        self.inputs[k]:update(dt)
     end
 end
 
