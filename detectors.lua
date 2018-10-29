@@ -26,6 +26,19 @@ function detectors.axis.gamepad(axis,padnum)--requires version >=0.9.0
     end
 end
 
+function detectors.axis.buttons(positiveButton, negativeButton)
+	return function()
+		local value = 0
+		if positiveButton() then
+			value = value + 1
+		end
+		if negativeButton() then
+			value = value - 1
+		end
+		return value
+	end
+end
+
 detectors.joy={}
 function detectors.joy.gamepad(axis,padnum)
     return detectors.axis.gamepad(axis.."x",padnum), detectors.axis.gamepad(axis.."y",padnum)

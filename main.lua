@@ -36,6 +36,10 @@ function love.load()
     p.inputs.lx:addDetector(detectors.axis.gamepad("leftx", 1))
     p.inputs.ly:addDetector(detectors.axis.gamepad("lefty", 1))
 
+	p.inputs.lx:addDetector(detectors.axis.buttons(detectors.button.key("l"),detectors.button.key("j")))
+	p.inputs.ly:addDetector(detectors.axis.buttons(detectors.button.key("k"),detectors.button.key("i")))
+
+	func = detectors.axis.buttons(detectors.button.key("l"),detectors.button.key("j"))
 
 
     p:newjoy("r")
@@ -68,5 +72,6 @@ end
 function love.draw()
     love.graphics.setColor(0, 0, 255)
     love.graphics.rectangle("fill", p.x, p.y, 20, 20)
-    love.graphics.print(p.x .." ".. p.y)
+    love.graphics.print("player position:"..(math.floor(p.x)) .." ".. (math.floor(p.y)))
+	love.graphics.print("left joystick inputs:"..p.inputs.lx() .." ".. p.inputs.ly(),0,15)
 end
