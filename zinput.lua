@@ -102,22 +102,49 @@ function axis:setdeadzone(dz)
 end
 
 --experimental joystick wrapper for axes
-local joy = {}
+local joy = {
+	__call = function(self, what, mode)
+		what = what or "position"
+		mode = mode or self.defaultMode or "coordinates"
+		assert(type(what) == "string", "'what' must be a string")
+		if mode == "coordinates" then  --coordinate mode, returns x,y
+			if what == "position" or what == "value" then
+				return self.x.value, self.y.value
+			elseif what == "prev" then
+				return self.x.prev, self.y.prev
+			elseif what == "velocity" or what == "vel" then
+				return self.x.vel, self.y.vel
+			end
+		else --angle mode, returns angle,magnitude
+			if what == "position" or what == "value" then
+				local x,y = self.x.value, self.y.value
+				return math.atan2(y,x), matt.sqrt(x*x + y*y)
+			elseif what == "prev" then
+				local x,y = self.x.prev, self.y.prev
+				return math.atan2(y,x), matt.sqrt(x*x + y*y)
+			elseif what == "velocity" or what == "vel" then
+				local currAngle,currMag = self("value", "angle")
+				local prevAngle,prevMag = self("prev", "angle")
+				return (currAngle - prevAngle)/self.dt, (currAngle - prevAngle)/self.dt
+			end
+		end
+	end
+}
 joy.__index = joy
 
-function zinput:newjoy(name, x, y, ...)
+function zinput:newjoy(name, x, y, defaultMode, ...)
     self:newaxis(name..'x', x)
     self:newaxis(name..'y', y)
 
     self.inputs[name] = {
         x = self.inputs[name..'x'],
-        y = self.inputs[name..'y']
+        y = self.inputs[name..'y'],
+		defaultMode = defaultMode or "coordinates"
     }
-    setmetatable(self.inputs[name],joy)
+    setmetatable(self.inputs[name], joy)
 end
-function joy:update()
-    --doesn't need to do anything since the axes are updated already
-    --it just needs to exist
+function joy:update(dt)
+	self.dt = dt or love.timer.getDelta()
 end
 function joy:addDetector(x, y)
     self.x:addDetector(x)

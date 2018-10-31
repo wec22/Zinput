@@ -13,15 +13,11 @@ end
 function love.load()
     p = player:new()                    --create a new player object
 
+	--using "button mode"
     p:newbutton("up")                   --create buttons
     p:newbutton("down")
     p:newbutton("left")
     p:newbutton("right")
-
-    p.inputs.up:addDetector(detectors.button.key("up"))
-    p.inputs.down:addDetector(detectors.button.key("down"))
-    p.inputs.left:addDetector(detectors.button.key("left"))
-    p.inputs.right:addDetector(detectors.button.key("right"))
 
     p.inputs.up:addDetector(detectors.button.key("w"))
     p.inputs.down:addDetector(detectors.button.key("s"))
@@ -29,7 +25,7 @@ function love.load()
     p.inputs.right:addDetector(detectors.button.key("d"))
 
 
-
+	--using "axis mode"
     p:newaxis("lx")
     p:newaxis("ly")
 
@@ -41,14 +37,17 @@ function love.load()
 
 	func = detectors.axis.buttons(detectors.button.key("l"),detectors.button.key("j"))
 
-
+	--using "joystick mode"
     p:newjoy("r")
     p.inputs.r:addDetector(detectors.joy.gamepad("right", 1))
+	p.inputs.r:addDetector(detectors.axis.buttons(detectors.button.key("right"),detectors.button.key("left")),
+						   detectors.axis.buttons(detectors.button.key("down"),detectors.button.key("up")))
 
 end
 
 function love.update(dt)
     p:inputUpdate()                     --updates all inputs, required
+	require("lovebird").update()
 
     if p.inputs.up("down") then         --inputs are checked like functions
         p.y=p.y - (100 * dt)
@@ -60,13 +59,17 @@ function love.update(dt)
         p.x=p.x - (100 * dt)
     elseif p.inputs.right("down") then
         p.x=p.x + (100 * dt)
+		print("d")
     end
 
     p.x = p.x + p.inputs.lx() * 100 * dt
     p.y = p.y + p.inputs.ly() * 100 * dt
 
-    p.x = p.x + p.inputs.rx() * 100 * dt
-    p.y = p.y + p.inputs.ry() * 100 * dt
+	local dx,dy = p.inputs.r("position")
+	print(dx,dy)
+	p.x = p.x + dx * 100 * dt
+	p.y = p.y + dy * 100 * dt
+	print(dx * 100 * dt == (100*dt))
 end
 
 function love.draw()
